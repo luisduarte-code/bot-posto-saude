@@ -1,0 +1,25 @@
+{
+  "name": "bot-posto-saude",
+  "version": "1.0.0",
+  "description": "Bot para auxiliar no atendimento via WhatsApp do posto",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luisduarte-code/bot-posto-saude.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/luisduarte-code/bot-posto-saude/issues"
+  },
+  "homepage": "https://github.com/luisduarte-code/bot-posto-saude#readme",
+  "dependencies": {
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.34.7"
+  }
+}
