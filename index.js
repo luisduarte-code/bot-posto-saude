@@ -1,61 +1,78 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 
-// Inicializa o bot apontando para o Chrome instalado no seu Windows
 const client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: {
         executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-        // Se o seu Chrome não estiver na pasta acima (64-bits), tente o caminho abaixo desmarcando a linha seguinte:
-        // executablePath: 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
         args: ['--no-sandbox', '--disable-setuid-sandbox']
     }
 });
 
-// ... O RESTANTE DO SEU CÓDIGO (client.on('qr'), client.on('message'), etc.) CONTINUA EXATAMENTE IGUAL
-
-// Gera o QR Code no terminal para você escanear com o celular
 client.on('qr', (qr) => {
-    console.log('ESCANEIE O QR CODE ABAIXO COM O WHATSAPP DO POSTO:');
+    console.log('🔄 Novo QR Code gerado:');
     qrcode.generate(qr, { small: true });
 });
 
-// Avisa quando a conexão der certo
 client.on('ready', () => {
-    console.log('\n🤖 Bot do Posto de Saúde está ONLINE e pronto! 🏥');
+    console.log('\n🏥 SISTEMA DO POSTO DE SAÚDE ONLINE (Modo de Produção) 🚀');
 });
 
-// Processa as mensagens recebidas
 client.on('message', async (msg) => {
-    const textoUsuario = msg.body.trim();
+    // 1. IGNORAR MENSAGENS DE GRUPOS (Responder apenas chat privado)
+    if (msg.from.endsWith('@g.us')) return;
 
-    // Menu Principal (Se a pessoa saudar ou digitar algo que não seja número)
-    if (isNaN(textoUsuario)) {
-        const saudacao = 
-            `Olá! Você está falando com o Atendimento Virtual do Posto de Saúde. 🏥\n\n` +
-            `Para evitar filas e agilizar seu atendimento, escolha uma das opções digitando apenas o **NÚMERO** correspondente:\n\n` +
-            `*[ 1 ]* Horários e Documentos para Vacinação 💉\n` +
-            `*[ 2 ]* Como agendar Consultas ou Exames (Gercon) 🗓️\n` +
-            `*[ 3 ]* Retirada de Medicamentos e Receitas 💊\n` +
-            `*[ 4 ]* Falar com a Recepção (Dúvidas Gerais) 👤`;
-        
-        await msg.reply(saudacao);
+    // 2. TRATAMENTO DO TEXTO: Remove espaços extras e padroniza em minúsculo
+    const textoUsuario = msg.body.trim().toLowerCase();
+
+    // Texto padrão do Menu Principal
+    const menuPrincipal = 
+        `Olá! Você está falando com o Atendimento Virtual do *Posto de Saúde Panambiense* 🏥\n\n` +
+        `Para que possamos te ajudar rapidamente, escolha uma das opções abaixo digitando apenas o **NÚMERO** correspondente:\n\n` +
+        `*[ 1 ]* Horários e Documentos para Vacinação 💉\n` +
+        `*[ 2 ]* Como agendar Consultas ou Exames (Gercon) 🗓️\n` +
+        `*[ 3 ]* Retirada de Medicamentos e Receitas 💊\n` +
+        `*[ 4 ]* Falar com a Recepção (Dúvidas Gerais) 👤\n\n` +
+        `_Dica: A qualquer momento, você pode digitar *MENU* para voltar para cá._`;
+
+    // 3. FLUXO DE DECISÃO MELHORADO
+    if (textoUsuario === 'menu' || textoUsuario === 'voltar' || textoUsuario === 'oi' || textoUsuario === 'ola') {
+        await msg.reply(menuPrincipal);
     } 
-    // Respostas para cada opção do menu
     else if (textoUsuario === '1') {
-        await msg.reply('💉 *SALA DE VACINAS:*\nHorário: Segunda a Sexta, das 08h às 11h30 e das 13h às 16h30.\n⚠️ *O que trazer:* Cartão SUS, CPF e a Caderneta de Vacinação.');
+        await msg.reply(
+            `💉 *SALA DE VACINAS:*\n` +
+            `• *Horário:* Segunda a Sexta, das 08h às 11h30 e das 13h às 16h30.\n` +
+            `• *O que trazer:* Cartão SUS, CPF e a Caderneta de Vacinação.\n\n` +
+            `Digite *MENU* para voltar às opções.`
+        );
     } 
     else if (textoUsuario === '2') {
-        await msg.reply('🗓️ *AGENDAMENTOS (Consultas/Exames):*\nOs agendamentos são realizados via sistema GERCON.\nPara agendar, compareça presencialmente portando seu pedido médico e documento com foto, ou ligue para o nosso telefone fixo.');
+        await msg.reply(
+            `🗓️ *AGENDAMENTOS (Consultas/Exames):*\n` +
+            `• Todos os agendamentos são processados via sistema GERCON.\n` +
+            `• *Como fazer:* Compareça presencialmente ao posto portando o pedido médico e um documento com foto, de segunda a sexta em horário comercial.\n\n` +
+            `Digite *MENU* para voltar às opções.`
+        );
     } 
     else if (textoUsuario === '3') {
-        await msg.reply('💊 *RETIRADA DE MEDICAMENTOS:*\nDisponível na farmácia do posto das 07h30 às 17h.\n⚠️ É obrigatória a apresentação da receita médica atualizada e do cartão SUS.');
+        await msg.reply(
+            `💊 *RETIRADA DE MEDICAMENTOS:*\n` +
+            `• *Farmácia do Posto:* Aberta das 07h30 às 17h.\n` +
+            `• *Requisitos:* É obrigatório apresentar a receita médica atualizada (dentro do prazo de validade) e o cartão SUS do paciente.\n\n` +
+            `Digite *MENU* para voltar às opções.`
+        );
     } 
     else if (textoUsuario === '4') {
-        await msg.reply('👤 *FALAR COM A RECEPÇÃO:*\nPara um atendimento humano muito mais rápido e evitar filas no WhatsApp, por favor, **ligue para o nosso TELEFONE FIXO: (XX) XXXX-XXXX**.\n\nSe o seu assunto não puder ser resolvido por ligação, digite sua dúvida aqui e aguarde a recepcionista responder assim que estiver livre.');
+        await msg.reply(
+            `👤 *FALAR COM A RECEPÇÃO:*\n` +
+            `Para não enfrentar filas virtuais e ser atendido imediatamente, por favor, **ligue para o nosso TELEFONE FIXO: (99) 9999-9999**.\n\n` +
+            `Se preferir atendimento por texto, descreva detalhadamente sua dúvida abaixo e aguarde. A recepcionista responderá assim que liberar os atendimentos presenciais.`
+        );
     } 
     else {
-        await msg.reply('❌ Opção inválida. Digite apenas o número de 1 a 4 correspondente à sua dúvida.');
+        // Se o usuário digitar qualquer texto solto que não seja comando ou número do menu
+        await msg.reply(`❌ Opção não reconhecida.\n\nDigite apenas o número de *1 a 4* correspondente à sua dúvida ou digite *MENU* para ver as opções.`);
     }
 });
 
