@@ -1,6 +1,9 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 
+// 🌟 MARCA O SEGUNDO EXATO EM QUE O BOT FOI LIGADO (em segundos Unix)
+const tempoInicial = Math.floor(Date.now() / 1000);
+
 const client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: {
