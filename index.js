@@ -25,57 +25,63 @@ client.on('message', async (msg) => {
     // 1. IGNORAR MENSAGENS DE GRUPOS (Responder apenas chat privado)
     if (msg.from.endsWith('@g.us')) return;
 
-    // 2. TRATAMENTO DO TEXTO: Remove espaços extras e padroniza em minúsculo
+// 3. TRATAMENTO DO TEXTO
     const textoUsuario = msg.body.trim().toLowerCase();
 
     // Texto padrão do Menu Principal
     const menuPrincipal = 
         `Olá! Você está falando com o Atendimento Virtual do *Posto de Saúde Panambiense* 🏥\n\n` +
-        `Para que possamos te ajudar rapidamente, escolha uma das opções abaixo digitando apenas o **NÚMERO** correspondente:\n\n` +
+        `Para que possamos te ajudar rapidamente, escolha uma das opções abaixo digitando apenas o *NÚMERO* correspondente:\n\n` +
         `*[ 1 ]* Horários e Documentos para Vacinação 💉\n` +
-        `*[ 2 ]* Como agendar Consultas ou Exames (Gercon) 🗓️\n` +
+        `*[ 2 ]* Horários para Consultas 🗓️\n` +
         `*[ 3 ]* Retirada de Medicamentos e Receitas 💊\n` +
-        `*[ 4 ]* Falar com a Recepção (Dúvidas Gerais) 👤\n\n` +
-        `_Dica: A qualquer momento, você pode digitar *MENU* para voltar para cá._`;
+        `*[ 4 ]* Falar diretamente com a Recepção 👤\n\n` +
+        `A qualquer momento, você pode digitar *MENU* para voltar para cá.`;
 
-    // 3. FLUXO DE DECISÃO MELHORADO
-    if (textoUsuario === 'menu' || textoUsuario === 'voltar' || textoUsuario === 'oi' || textoUsuario === 'ola') {
-        await msg.reply(menuPrincipal);
-    } 
-    else if (textoUsuario === '1') {
+    // 4. FLUXO DE DECISÃO DIRETO E SEM ERROS SECOS
+    if (textoUsuario === '1') {
+        console.log(`[Bot Respondeu] Enviou Info de Vacina para ${contato.pushname || msg.from}`);
         await msg.reply(
             `💉 *SALA DE VACINAS:*\n` +
-            `• *Horário:* Segunda a Sexta, das 08h às 11h30 e das 13h às 16h30.\n` +
+            `• *Horário:* Segunda a Sexta, das 7:30h às 11h15 e das 13h às 16h30.\n` +
+            `• *As Terças-feiras o posto fecha as 15:00*\n\n`+
+            `• *Febre amarela somente nas quartas-feiras de manhã*\n\n`+
+            `• *Tríplice viral somente as quintas-ferias manhã e tarde*\n\n`+
             `• *O que trazer:* Cartão SUS, CPF e a Caderneta de Vacinação.\n\n` +
-            `Digite *MENU* para voltar às opções.`
+            `Digite qualquer coisa para voltar às opções.`
         );
     } 
     else if (textoUsuario === '2') {
+        console.log(`[Bot Respondeu] Enviou Info de Agendamento para ${contato.pushname || msg.from}`);
         await msg.reply(
-            `🗓️ *AGENDAMENTOS (Consultas/Exames):*\n` +
-            `• Todos os agendamentos são processados via sistema GERCON.\n` +
-            `• *Como fazer:* Compareça presencialmente ao posto portando o pedido médico e um documento com foto, de segunda a sexta em horário comercial.\n\n` +
+            `🗓️ *Horário para consultas:*\n` +
+            `• *Horário:* Segunda a Sexta, das 7:30h às 11h15 e das 13h às 16h30.\n` +
+            `• *As Terças-feiras o posto fecha as 15:00*\n\n`+
+            `• *Para agendar:* Você poderá comparecer no posto, agendar pelo WhatssApp diretamente com a recepcionista ou ligar para o nosso telefone fixo: (99) 9999-9999.\n\n` +
             `Digite *MENU* para voltar às opções.`
         );
     } 
     else if (textoUsuario === '3') {
+        console.log(`[Bot Respondeu] Enviou Info de Medicamentos para ${contato.pushname || msg.from}`);
         await msg.reply(
             `💊 *RETIRADA DE MEDICAMENTOS:*\n` +
             `• *Farmácia do Posto:* Aberta das 07h30 às 17h.\n` +
-            `• *Requisitos:* É obrigatório apresentar a receita médica atualizada (dentro do prazo de validade) e o cartão SUS do paciente.\n\n` +
+            `• *Requisitos:* É obrigado apresentar a receita médica atualizada (dentro do prazo de validade) e o cartão SUS do paciente.\n\n` +
             `Digite *MENU* para voltar às opções.`
         );
     } 
     else if (textoUsuario === '4') {
+        console.log(`[Bot Respondeu] Enviou Info de Recepção para ${contato.pushname || msg.from}`);
         await msg.reply(
             `👤 *FALAR COM A RECEPÇÃO:*\n` +
-            `Para não enfrentar filas virtuais e ser atendido imediatamente, por favor, **ligue para o nosso TELEFONE FIXO: (99) 9999-9999**.\n\n` +
+            `Para não enfrentar filas virtuais e ser atendido imediatamente, por favor, **ligue para o nosso TELEFONE FIXO: (XX) XXXX-XXXX**.\n\n` +
             `Se preferir atendimento por texto, descreva detalhadamente sua dúvida abaixo e aguarde. A recepcionista responderá assim que liberar os atendimentos presenciais.`
         );
     } 
+    // 🔥 QUALQUE OUTRA COISA ENVIADA (Oi, oii, bom dia, blabla, 5, etc.) MOSTRA O MENU DIRETO:
     else {
-        // Se o usuário digitar qualquer texto solto que não seja comando ou número do menu
-        await msg.reply(`❌ Opção não reconhecida.\n\nDigite apenas o número de *1 a 4* correspondente à sua dúvida ou digite *MENU* para ver as opções.`);
+        console.log(`[Bot Respondeu] Mensagem recebida disparou o Menu Principal para ${contato.pushname || msg.from}`);
+        await msg.reply(menuPrincipal);
     }
 });
 
