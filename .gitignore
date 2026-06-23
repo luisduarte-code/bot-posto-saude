@@ -134,3 +134,7 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# WhatsApp Session Data, para não precisar ficar pedindo qr code sempre
+.wwebjs_auth/
+.wwebjs_cache/
