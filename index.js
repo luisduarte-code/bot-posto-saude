@@ -13,6 +13,7 @@ const client = new Client({
 });
 
 // ... O RESTANTE DO SEU CÓDIGO (client.on('qr'), client.on('message'), etc.) CONTINUA EXATAMENTE IGUAL
+
 // Gera o QR Code no terminal para você escanear com o celular
 client.on('qr', (qr) => {
     console.log('ESCANEIE O QR CODE ABAIXO COM O WHATSAPP DO POSTO:');
@@ -31,8 +32,8 @@ client.on('message', async (msg) => {
     // Menu Principal (Se a pessoa saudar ou digitar algo que não seja número)
     if (isNaN(textoUsuario)) {
         const saudacao = 
-            `Olá! Você está falando com o Atendimento Virtual do Posto de Saúde ESF - Feinsterseifer. 🏥\n\n` +
-            `Para evitar filas e agilizar seu atendimento, escolha uma das opções digitando apenas o *NÚMERO* correspondente:\n\n` +
+            `Olá! Você está falando com o Atendimento Virtual do Posto de Saúde. 🏥\n\n` +
+            `Para evitar filas e agilizar seu atendimento, escolha uma das opções digitando apenas o **NÚMERO** correspondente:\n\n` +
             `*[ 1 ]* Horários e Documentos para Vacinação 💉\n` +
             `*[ 2 ]* Como agendar Consultas ou Exames (Gercon) 🗓️\n` +
             `*[ 3 ]* Retirada de Medicamentos e Receitas 💊\n` +
@@ -51,7 +52,7 @@ client.on('message', async (msg) => {
         await msg.reply('💊 *RETIRADA DE MEDICAMENTOS:*\nDisponível na farmácia do posto das 07h30 às 17h.\n⚠️ É obrigatória a apresentação da receita médica atualizada e do cartão SUS.');
     } 
     else if (textoUsuario === '4') {
-        await msg.reply('👤 *FALAR COM A RECEPÇÃO:*\nPara um atendimento humano muito mais rápido e evitar filas no WhatsApp, por favor, *ligue para o nosso TELEFONE FIXO: (55) 3376-9137*.\n\nSe o seu assunto não puder ser resolvido por ligação, digite sua dúvida aqui e aguarde a recepcionista responder assim que estiver livre.');
+        await msg.reply('👤 *FALAR COM A RECEPÇÃO:*\nPara um atendimento humano muito mais rápido e evitar filas no WhatsApp, por favor, **ligue para o nosso TELEFONE FIXO: (XX) XXXX-XXXX**.\n\nSe o seu assunto não puder ser resolvido por ligação, digite sua dúvida aqui e aguarde a recepcionista responder assim que estiver livre.');
     } 
     else {
         await msg.reply('❌ Opção inválida. Digite apenas o número de 1 a 4 correspondente à sua dúvida.');
