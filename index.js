@@ -17,6 +17,17 @@ const client = new Client({
         args: ['--no-sandbox', '--disable-setuid-sandbox']
     }
 });
+client.on('ready', () => {
+    console.log('✅ Bot conectado e pronto!');
+});
+
+client.on('auth_failure', (msg) => {
+    console.error('❌ Falha de autenticação:', msg);
+});
+
+client.on('disconnected', (reason) => {
+    console.log('⚠️ Desconectado:', reason);
+});
 
 client.on('qr', (qr) => {
     //Quando o WhatsApp gera um código de conexão, ele entra aqui
@@ -25,8 +36,9 @@ client.on('qr', (qr) => {
     qrcode.generate(qr, { small: true });
 });
 
-client.on('message', async (msg) => {
 
+client.on('message', async (msg) => {
+    console.log(`📥 Mensagem recebida! Body: "${msg.body}" | timestamp: ${msg.timestamp} | limite: ${tempoInicial + 5}`);
     //TRAVA ANTI-MENSAGENS ANTIGAS (Dando 5 segundos de folga para o bot iniciar em paz)
     if (msg.timestamp < (tempoInicial + 5)) return;
 
@@ -56,7 +68,7 @@ client.on('message', async (msg) => {
         `*[ 5 ]* Saúde da Criança 🧸\n` +
         `*[ 6 ]* Testes Rápidos ⏩\n` +
         `*[ 7 ]* Renovação de Receitas 💊\n` +
-        `*[ 8 ]* Falar diretamente com a Recepção 👤(*Somente Texto*\n\n` +
+        `*[ 8 ]* Falar diretamente com a Recepção 👤(*Somente Texto*)\n\n` +
         `A qualquer momento, você pode digitar *MENU* para voltar para cá.`;
 
    // fluxo de decisões
@@ -65,9 +77,9 @@ client.on('message', async (msg) => {
         console.log(`[Bot Respondeu] Enviou Info de Atendimento Médico para ${contato.pushname || msg.from}`);
         // Envia a resposta de volta para o celular do paciente
         await msg.reply(
-            `👨‍⚕️ *Horário para consultas:*\n` +
-            `• *Horário:* Segunda a Sexta, das 7h30 às 11h15 e das 13h00 às 16h30.\n` +
-            `• *As Terças-feiras o posto fecha as 15h00*\n\n`+
+            `👨‍⚕️*Para consultas:*\n` +
+            `• *Horário:* Segunda a Sexta, das 7h30 às 11h15 e das 13h00 às 16h30.\n\n` +
+            `• *As Terças-feiras o posto fecha as 15h00.*\n\n`+
             `• *Para agendar:* Você poderá comparecer no posto, agendar pelo WhatssApp diretamente com a recepcionista ou ligar para o nosso telefone fixo: (99) 9999-9999.\n\n` +
             `Digite *MENU*para voltar às opções.`
         );
@@ -76,9 +88,9 @@ client.on('message', async (msg) => {
     else if (textoUsuario === '2') {
         console.log(`[Bot Respondeu] Enviou Info de Atendimento Odontológico para ${contato.pushname || msg.from}`);
         await msg.reply(
-            `🦷 *Atendimento Odontológico: Somente por Agendamento*\n` +
-            `• *Horário:* Segunda a Sexta, das 7h30 às 11h30 e das 13h00 às 17h00.\n` +
-            `• *As Terças-feiras o posto fecha as 15h00*\n\n`+
+            `🦷 *Atendimento Odontológico: Somente por Agendamento.*\n\n` +
+            `• *Horário:* Segunda a Sexta, das 7h30 às 11h30 e das 13h00 às 17h00.\n\n` +
+            `• *As Terças-feiras o posto fecha as 15h00.*\n\n`+
             `• *Para agendar:* Você poderá comparecer no posto, agendar pelo WhatssApp diretamente com a recepcionista ou ligar para o nosso telefone fixo: (99) 9999-9999.\n\n` +
             `Digite *MENU* para voltar às opções.`
         );
@@ -87,11 +99,11 @@ client.on('message', async (msg) => {
     else if (textoUsuario === '3') {
         console.log(`[Bot Respondeu] Enviou Info de Vacinas para ${contato.pushname || msg.from}`);
         await msg.reply(
-             `💉 *SALA DE VACINAS:*\n` +
-            `• *Horário:* Segunda a Sexta, das 7:30h às 11h15 e das 13h às 16h30.\n` +
-            `• *As Terças-feiras o posto fecha as 15:00*\n\n`+
-            `• *Febre amarela somente nas quartas-feiras de manhã*\n\n`+
-            `• *Tríplice viral somente as quintas-ferias manhã e tarde*\n\n`+
+             `💉 *SALA DE VACINAS:*\n\n` +
+            `• *Horário:* Segunda a Sexta, das 7:30h às 11h15 e das 13h às 16h30.\n\n` +
+            `• *As Terças-feiras o posto fecha as 15:00.*\n\n`+
+            `• *Febre amarela somente nas quartas-feiras de manhã.*\n\n`+
+            `• *Tríplice viral somente as quintas-feiras manhã e tarde.*\n\n`+
             `• *O que trazer:* Cartão SUS, CPF e a Caderneta de Vacinação.\n\n` +
             `Digite *MENU* para voltar às opções.`           
         );
@@ -100,10 +112,10 @@ client.on('message', async (msg) => {
     else if (textoUsuario === '4') {
         console.log(`[Bot Respondeu] Enviou Info de Saúde da Muher para ${contato.pushname || msg.from}`);
         await msg.reply(
-            `♀️ *Saúde da mulher: Precisa ser agendado*\n` +
-            `• *Exame preventivo.*\n` +
-            `• *Solicitação para mamografia.*\n` +
-            `• *Para agendar:* Você poderá comparecer no posto, agendar pelo WhatssApp diretamente com a recepcionista ou ligar para o nosso telefone fixo: (99) 9999-9999.\n`+
+            `♀️ *Saúde da mulher: Precisa ser agendado.*\n\n` +
+            `• *Exame preventivo.*\n\n` +
+            `• *Solicitação para mamografia.*\n\n` +
+            `• *Para agendar:* Você poderá comparecer no posto, agendar pelo WhatssApp diretamente com a recepcionista ou ligar para o nosso telefone fixo: (99) 9999-9999.\n\n`+
             `Digite *MENU* para voltar às opções.`
             
             
@@ -113,10 +125,10 @@ client.on('message', async (msg) => {
      else if (textoUsuario === '5') {
         console.log(`[Bot Respondeu] Enviou Info de Recepção para ${contato.pushname || msg.from}`);
         await msg.reply(
-            `🧸*Saúde da Criança: Precisa ser agendado*\n` +
-            `• *Teste do pezinho.*\n` +
-            `• *Puericultura.*\n` +
-            `• *Para agendar:* Você poderá comparecer no posto, agendar pelo WhatssApp diretamente com a recepcionista ou ligar para o nosso telefone fixo: (99) 9999-9999.\n`+
+            `🧸*Saúde da Criança: Precisa ser agendado.*\n\n` +
+            `• *Teste do pezinho.*\n\n` +
+            `• *Puericultura.*\n\n` +
+            `• *Para agendar:* Você poderá comparecer no posto, agendar pelo WhatssApp diretamente com a recepcionista ou ligar para o nosso telefone fixo: (99) 9999-9999.\n\n`+
             `Digite *MENU* para voltar às opções.`
         );
     } 
@@ -124,11 +136,11 @@ client.on('message', async (msg) => {
      else if (textoUsuario === '6') {
         console.log(`[Bot Respondeu] Enviou Info de Recepção para ${contato.pushname || msg.from}`);
         await msg.reply(
-            `⏩*Testes Rápido: Precisa ser agendado*\n` +
-            `• *Hepatite B e C.*\n` +
-            `• *HIV.*\n` +
-            `• *Sífilis.*\n` +
-            `• *Para agendar:* Você poderá comparecer no posto, agendar pelo WhatssApp diretamente com a recepcionista ou ligar para o nosso telefone fixo: (99) 9999-9999.\n`+
+            `⏩*Testes Rápido: Precisa ser agendado.*\n\n` +
+            `• *Hepatite B e C.*\n\n` +
+            `• *HIV.*\n\n` +
+            `• *Sífilis.*\n\n` +
+            `• *Para agendar:* Você poderá comparecer no posto, agendar pelo WhatssApp diretamente com a recepcionista ou ligar para o nosso telefone fixo: (99) 9999-9999.\n\n`+
             `Digite *MENU* para voltar às opções.`
         );
     } 
@@ -136,8 +148,9 @@ client.on('message', async (msg) => {
      else if (textoUsuario === '7') {
         console.log(`[Bot Respondeu] Enviou Info de Recepção para ${contato.pushname || msg.from}`);
         await msg.reply(
-           `💊 *Renovação de receitas:*\n` +
-            `• *Posto fica aberto:* Aberta das 07h30 às 11:30 e da 13:00 às 17h.\n` +
+           `💊 *Renovação de receitas:*\n\n` +
+            `• *Horário:*Segunda a Sexta, das 07h30 às 11:30 e da 13:00 às 17h.\n\n` +
+            `• *As Terças-feiras o posto fecha as 15:00.*\n\n`+
             `• *Para a renovação de receitas:*Você pode enviar a foto para a recepcionista do posto, foto da *RECEITA*,e após a confirmação de sua renovação,busca-lá no posto de saúde.\n\n` +
             `Digite *MENU* para voltar às opções.`
         );
@@ -146,9 +159,9 @@ client.on('message', async (msg) => {
      else if (textoUsuario === '8') {
         console.log(`[Bot Respondeu] Enviou Info de Recepção para ${contato.pushname || msg.from}`);
         await msg.reply(
-            `👤 *FALAR COM A RECEPÇÃO:*\n` +
+            `👤 *FALAR COM A RECEPÇÃO:*\n\n` +
             `Para não enfrentar filas virtuais e ser atendido imediatamente, por favor, **ligue para o nosso TELEFONE FIXO: (XX) XXXX-XXXX**.\n\n` +
-            `Se preferir atendimento por texto, descreva detalhadamente sua dúvida abaixo e aguarde. A recepcionista responderá assim que liberar os atendimentos presenciais.\n`+
+            `Se preferir atendimento por texto, descreva detalhadamente sua dúvida abaixo e aguarde. A recepcionista responderá assim que liberar os atendimentos presenciais.\n\n`+
             `Digite *MENU* para voltar às opções.`
         );
     }
