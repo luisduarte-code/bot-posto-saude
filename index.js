@@ -26,20 +26,15 @@ client.on('qr', (qr) => {
 });
 
 client.on('message', async (msg) => {
-    //ANTI-MENSAGENS ANTIGAS (Dando 5 segundos de folga para o bot iniciar em paz)
+
+    //TRAVA ANTI-MENSAGENS ANTIGAS (Dando 5 segundos de folga para o bot iniciar em paz)
     if (msg.timestamp < (tempoInicial + 5)) return;
 
-    //IGNORAR MENSAGENS DE GRUPOS
+    //IGNORAR MENSAGENS DE GRUPOS (Responder apenas chat privado)
     if (msg.from.endsWith('@g.us')) return;
 
     //IGNORA SE FOR NOTIFICAÇÃO DE STATUS OU SE A MENSAGEM VIER VAZIA
     if (!msg.body || msg.type === 'status_v3' || msg.from === 'status@broadcast') return;
-    
-    // Se o horário da mensagem recebida for menor/mais antigo que o horário que o bot ligou, o "return" para o código ali mesmo
-    if (msg.timestamp < tempoInicial) return;
-
-    // Se o identificador do remetente terminar com '@g.us' (que significa grupo), o "return" ignora a mensagem
-    if (msg.from.endsWith('@g.us')) return;
 
     // CAPTURA DE DADOS DO PACIENTE
     // O "await" faz o código pausar por um milésimo de segundo para ir buscar o nome do contato na agenda do WhatsApp
